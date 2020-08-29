@@ -21,15 +21,11 @@ json TGeoManagerExporter::convertComposite(TGeoCompositeShape *composite) {
     json first_shape = convertShape(bool_node->GetLeftShape());
 
     j["first"] = json_union(first_shape, first_pos);
-    //first_shape.merge_patch(first_pos);
-    //j["first"] = first_shape;
 
     json second_pos = convertMatrix(bool_node->GetRightMatrix());
     json second_shape = convertShape(bool_node->GetRightShape());
 
     j["second"] = json_union(second_shape, second_pos);
-    //second_shape.merge_patch(second_pos);
-    //j["second"] = second_shape;
 
     std::string operator_type;
     switch (bool_node->GetBooleanOperator()) {
@@ -54,10 +50,10 @@ json TGeoManagerExporter::convertStyles() const {
         j["gdml"]["material"] = material->GetName();
 
         TColor* color = gROOT->GetColor(material->GetDefaultColor());
-        auto opacity = (int64_t)material->GetTransparency();
+        auto opacity = int64_t (material->GetTransparency());
 
-        if (opacity != 0) {
-            j["material"]["opacity"] = (int64_t)material->GetTransparency();
+        if (opacity != 0) { 
+            j["material"]["opacity"] = int64_t (material->GetTransparency());
         }
         j["material"]["color"] = stringFromColor(color);
 
@@ -67,13 +63,12 @@ json TGeoManagerExporter::convertStyles() const {
     }
 
     return styleSheet;
-
 }
 
 std::string TGeoManagerExporter::stringFromColor(TColor *color) const { 
-    uint16_t r = (int)(color->GetRed() * 255);
-    uint16_t g = (int)(color->GetGreen() * 255);
-    uint16_t b = (int)(color->GetBlue() * 255);
+    uint16_t r = uint16_t (color->GetRed() * 255);
+    uint16_t g = uint16_t (color->GetGreen() * 255);
+    uint16_t b = uint16_t (color->GetBlue() * 255);
 
     std::stringstream sstr;
     sstr << "#" << std::hex << (r << 16 | g << 8 | b );
@@ -143,19 +138,14 @@ std::string TGeoManagerExporter::getMaterialEntry(TGeoMaterial* material) const 
 }
 
 json TGeoManagerExporter::convert(TGeoManager* _geomanager) {
-
     json j;
 
     prepare(_geomanager);
 
     j["type"] = group_type;
-
     j[k_styles_name] = convertStyles();
-
     j[k_templates_name] = convertTemplates();
-
     j[k_properties_name] = convertProperties();
-
     j[k_children_name] = convertChildren();
 
     return j;
@@ -196,7 +186,7 @@ void TGeoManagerExporter::prepare(TGeoManager* _geomanager) {
     TList* materials_list = geoManager->GetListOfMaterials();
     TIter next(materials_list);
     TGeoMaterial *material;
-    while ((material = (TGeoMaterial *)next())) {
+    while ((material = dynamic_cast<TGeoMaterial*>(next()))) {
         materials.insert(material);
     }
     std::queue<TGeoVolume*> volume_que;
@@ -215,8 +205,8 @@ void TGeoManagerExporter::prepare(TGeoManager* _geomanager) {
         if (current_nodes == nullptr) {
             continue;
         }
-        for (int i = 0; i < current_nodes->GetSize(); ++i) {
-            auto node = (TGeoNode*)current_nodes->At(i);
+        for (int32_t i = 0; i < current_nodes->GetSize(); ++i) {
+            auto node = dynamic_cast<TGeoNode*>(current_nodes->At(i));
             if (node == nullptr) {
                 continue;
             }
@@ -231,7 +221,7 @@ void TGeoManagerExporter::prepare(TGeoManager* _geomanager) {
 
 // OTHER 
 
-double TGeoManagerExporter::DegreeToRad(double angle) {  //!!!!!!
+double TGeoManagerExporter::DegreeToRad(double angle) {
     constexpr double Pi = 3.14159265;
     return angle * Pi / 180;
 }

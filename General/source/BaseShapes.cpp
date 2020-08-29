@@ -7,26 +7,28 @@ json TGeoManagerExporter::convertShape(TGeoShape *shape) {
     }
     if (shape->TestShapeBit(TGeoCompositeShape::EShapeType::kGeoComb)) {
         return convertComposite(dynamic_cast<TGeoCompositeShape*>(shape));
-
-    } else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoCone)) {
+    } 
+    else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoCone)) {
         return convertCone(dynamic_cast<TGeoCone*>(shape));
-    } else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoTube)) {
+    } 
+    else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoTube)) {
         return convertTube(dynamic_cast<TGeoTube*>(shape));
-
-    } else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoSph)) {
+    } 
+    else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoSph)) {
         return convertSphere(dynamic_cast<TGeoSphere*>(shape));
-
-    } else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoBox)) {
+    } 
+    else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoBox)) {
         return convertBox(dynamic_cast<TGeoBBox*>(shape));
-
-    } else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoXtru)) {
+    } 
+    else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoXtru)) {
         return convertXtru(dynamic_cast<TGeoXtru*>(shape));
-
-    } else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoBad) ||
+    } 
+    else if (shape->TestShapeBit(TGeoShape::EShapeType::kGeoBad) ||
               shape->TestShapeBit(TGeoShape::EShapeType::kGeoNoShape)) {
         j["type"] = "ErrorType";
         return j;
-    } else {
+    } 
+    else {
         j["type"] = "Unknown";
         return j;
     }
@@ -98,23 +100,23 @@ json TGeoManagerExporter::convertXtru(TGeoXtru *xtru) {
     json j;
     j["type"] = "solid.extrude";
 
-    std::vector<json> layers;
-    double_t* param;
-    xtru->SetDimensions(param);
-    for (int i = 1; i < (int)param[0] * 4; i += 4) 
-        layers.push_back({
-            {"x", param[i]},
-            {"y", param[i + 1]},
-            {"z", param[i + 2]},
-            {"scale", param[i + 3]}
-        });
+    // std::vector<json> layers;
+    // double_t* param;
+    // xtru->SetDimensions(param);
+    // for (int32_t i = 1; i < dynamic_cast<param[0]> * 4; i += 4) 
+    //     layers.push_back({
+    //         {"x", param[i]},
+    //         {"y", param[i + 1]},
+    //         {"z", param[i + 2]},
+    //         {"scale", param[i + 3]}
+    //     });
     
-    //std::cout << layers;
-    j["layers"] = layers;
+    // //std::cout << layers;
+    // j["layers"] = layers;
 
-    // std::vector<json> points;
-    // double* pnt;
-    // xtru->SetPoints(pnt);
+    // // std::vector<json> points;
+    // // double* pnt;
+    // // xtru->SetPoints(pnt);
 
     return j;
 }
@@ -128,16 +130,21 @@ json TGeoManagerExporter::convertMatrix(TGeoMatrix* matrix) {
     }
 
     if (matrix->IsGeneral()) {
-        return convertGeneralMatrix((TGeoGenTrans*) matrix);
-    } else if (matrix->IsCombi()) {
-        return convertCombination((TGeoCombiTrans*) matrix);   
-    } else if (matrix->IsRotation()) {
-        return convertRotation((TGeoRotation*) matrix);
-    } else if (matrix->IsTranslation() && typeid(*matrix) == typeid(TGeoTranslation)) {
-        return convertTranslation((TGeoTranslation*)matrix);
-    } else if (matrix->IsScale()) {
-        return convertScale((TGeoScale*) matrix);
-    } else {
+        return convertGeneralMatrix(dynamic_cast<TGeoGenTrans*>(matrix));
+    } 
+    else if (matrix->IsCombi()) {
+        return convertCombination(dynamic_cast<TGeoCombiTrans*>(matrix));   
+    } 
+    else if (matrix->IsRotation()) {
+        return convertRotation(dynamic_cast<TGeoRotation*>(matrix));
+    } 
+    else if (matrix->IsTranslation() && typeid(*matrix) == typeid(TGeoTranslation)) {
+        return convertTranslation(dynamic_cast<TGeoTranslation*>(matrix));
+    } 
+    else if (matrix->IsScale()) {
+        return convertScale(dynamic_cast<TGeoScale*>(matrix));
+    } 
+    else {
          return j; //make debug case
     }
 }

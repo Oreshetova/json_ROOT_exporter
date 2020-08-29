@@ -32,7 +32,7 @@ using json = nlohmann::json;
 //using namespace std;
 
 class TGeoManagerExporter {
-public:
+private:
     TGeoManager* geoManager;
 
     static const char *const proxy_type;
@@ -80,12 +80,15 @@ public:
     json convertTemplateVolumes() const;
     json convertTemplateNodes() const;
     json convertChildTemplateNode(TGeoNode* node) const;
-    json convert(TGeoManager* _geomanager);
     json convertProperties() const;
     json convertChildren() const;
     json convertNode(TGeoNode* node) const;
 
     void prepare(TGeoManager* _geomanager);
+
+public:
+    json convert(TGeoManager* _geomanager);
+
 };
 
 

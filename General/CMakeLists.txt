@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(General)
-enable_testing()
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(include)
 
@@ -14,7 +9,7 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 
 file(GLOB_RECURSE SOURCES . source/*.cpp)
 
-add_library(export_lib STATIC ${SOURCES})
+add_library(export_lib ${SOURCES})
 
 target_link_libraries(export_lib PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(export_lib PUBLIC ROOT::Geom)
